@@ -15,11 +15,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 import torch.utils.data
-import yaml
+import yaml  #读取配置文件的模块
 from torch.cuda import amp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
-from tqdm import tqdm
+from tqdm import tqdm #显示进度条的模块
 
 import test  # import test.py to get mAP after each epoch
 from models.experimental import attempt_load
@@ -35,15 +35,16 @@ from utils.plots import plot_images, plot_labels, plot_results, plot_evolution
 from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
 from utils.wandb_logging.wandb_utils import WandbLogger, check_wandb_resume
 
+#初始化一个logger
 logger = logging.getLogger(__name__)
 
 
 def train(hyp, opt, device, tb_writer=None):
-    logger.info(colorstr('hyperparameters: ') + ', '.join(f'{k}={v}' for k, v in hyp.items()))
+    logger.info(colorstr('hyperparameters: ') + ', '.join(f'{k}={v}' for k, v in hyp.items())) ##用蓝色字体输出超参数
     save_dir, epochs, batch_size, total_batch_size, weights, rank, freeze = \
         Path(opt.save_dir), opt.epochs, opt.batch_size, opt.total_batch_size, opt.weights, opt.global_rank, opt.freeze
 
-    # Directories
+    # Directories  一些目录
     wdir = save_dir / 'weights'
     wdir.mkdir(parents=True, exist_ok=True)  # make dir
     last = wdir / 'last.pt'
